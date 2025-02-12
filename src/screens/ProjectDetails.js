@@ -1,72 +1,91 @@
-import { SafeAreaView, View, Text, FlatList} from "react-native";
-import { StyleSheet } from "react-native";
-
+import React from 'react';
+import { SafeAreaView, View, Text, FlatList, StyleSheet } from 'react-native';
 
 const ProjectDetail = () => {
-    //Visual components of project screen
+    const members = [
+        { id: '1', name: 'Integrante 1', progress: 'Progreso' },
+        { id: '2', name: 'Integrante 2', progress: 'Progreso' },
+        { id: '3', name: 'Integrante 3', progress: 'Progreso' },
+    ];
+
+    const renderItem = ({ item }) => (
+        <View style={styles.memberContainer}>
+            <Text style={styles.memberName}>{item.name}</Text>
+            <Text style={styles.memberProgress}>{item.progress}</Text>
+        </View>
+    );
+
     return (
-        <View style={styles.container}> 
-            <Text style= {styles.tittle}>Colabora + logo</Text>
-            <Text style= {styles.subtittle}>Descripcion del proyecto</Text>
-            <Text style= {styles.text}>Descripcion del proyecto</Text>
-            <Text style= {styles.text}>Fecha de inicio:</Text>
-            <Text style= {styles.text}>Fecha final:</Text>
-            <Text style= {styles.subtittle}>Integrantes:</Text>
-                <View style={styles.table} > 
-                    <View style= {styles.header}>
-                    <Text style={styles.headerCell}> Programa</Text>
-                    <Text style={styles.headerCell}> Progreso</Text>
-                    <Text> Programa</Text>
-                    </View>
-                </View>
-        </View> 
-    )
-}
+        <SafeAreaView style={styles.container}>
+            <Text style={styles.title}>COLABORA + Logo</Text>
+
+            {/* Recuadro para la descripción del proyecto */}
+            <View style={styles.sectionContainer}>
+                <Text style={styles.subtitle}>Descripción del proyecto</Text>
+                <Text style={styles.text}>Nombre proyecto</Text>
+                <Text style={styles.text}>Fecha de inicio:</Text>
+                <Text style={styles.text}>Fecha final:</Text>
+            </View>
+
+            {/* Recuadro para la tabla de integrantes */}
+            <View style={styles.sectionContainer}>
+                <Text style={styles.subtitle}>Integrantes:</Text>
+                <FlatList
+                    data={members}
+                    renderItem={renderItem}
+                    keyExtractor={item => item.id}
+                />
+            </View>
+        </SafeAreaView>
+    );
+};
 
 const styles = StyleSheet.create({
-    container:{
+    container: {
         flex: 1,
-        padding: 16, 
-        backgroundColor: '#fff'
+        padding: 16,
+        backgroundColor: '#fff',
     },
-    tittle: {
+    title: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 16
+        marginBottom: 16,
+        textAlign: 'center',
     },
-    subtittle: {
-        fontSize: 24,
-        fontWeight: '16',
-        marginTop: 16,
-        marginBottom: 8
+    subtitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 8,
     },
     text: {
         fontSize: 16,
-        marginBottom: 8
+        marginBottom: 8,
     },
-    table:{
-        marginTop: 16
+    sectionContainer: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        padding: 16,
+        marginBottom: 16,
+        backgroundColor: '#D9D9D9'
     },
-    header: {
+    memberContainer: {
         flexDirection: 'row',
-        borderBottomWidth: '#000',
-        paddingBottom : 8
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: '#e0f7fa', // Color de fondo para cada integrante
+        padding: 10,
+        borderRadius: 8,
+        marginBottom: 8,
     },
-    headerCell:{
-        flex:1,
+    memberName: {
+        fontSize: 16,
         fontWeight: 'bold',
-        fontSize: 16
     },
-    row: {
-        flexDirection: 'row',
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-        paddingVertical: 8
+    memberProgress: {
+        fontSize: 16,
+        color: '#00796b', // Color del texto de progreso
     },
-    cell: {
-        flex:1,
-        fontSize:16
-    }
-})
+});
 
 export default ProjectDetail;
