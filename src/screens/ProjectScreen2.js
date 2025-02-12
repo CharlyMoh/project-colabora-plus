@@ -1,22 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import React from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 
 const AgregarIntegrantesScreen = () => {
-  const [nombre, setNombre] = useState('');
-  const [integrantes, setIntegrantes] = useState([]);
-
-  const agregarIntegrante = () => {
-    if (nombre.trim() !== '') {
-      setIntegrantes([...integrantes, nombre]);
-      setNombre('');
-    }
-  };
-
-  const eliminarIntegrante = (index) => {
-    const nuevaLista = integrantes.filter((_, i) => i !== index);
-    setIntegrantes(nuevaLista); 
-  };
-
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -33,10 +18,8 @@ const AgregarIntegrantesScreen = () => {
         <TextInput
           style={styles.input}
           placeholder="Nombre del integrante"
-          value={nombre}
-          onChangeText={setNombre}
         />
-        <TouchableOpacity style={styles.addButton} onPress={agregarIntegrante}>
+        <TouchableOpacity style={styles.addButton}>
           <Text style={styles.addButtonText}>Agregar integrante</Text>
         </TouchableOpacity>
       </View>
@@ -44,18 +27,18 @@ const AgregarIntegrantesScreen = () => {
       {/* Lista de Integrantes */}
       <Text style={styles.sectionTitle}>Lista de integrantes agregados</Text>
       <View style={styles.listContainer}>
-        <FlatList
-          data={integrantes}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item, index }) => (
-            <View style={styles.listItem}>
-              <Text style={styles.integranteText}>{item}</Text>
-              <TouchableOpacity style={styles.deleteButton} onPress={() => eliminarIntegrante(index)}>
-                <Text style={styles.deleteButtonText}>Eliminar</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        />
+        <View style={styles.listItem}>
+          <Text style={styles.integranteText}>Integrante 1</Text>
+          <TouchableOpacity style={styles.deleteButton}>
+            <Text style={styles.deleteButtonText}>Eliminar</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.listItem}>
+          <Text style={styles.integranteText}>Integrante 2</Text>
+          <TouchableOpacity style={styles.deleteButton}>
+            <Text style={styles.deleteButtonText}>Eliminar</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Botón Finalizar */}
