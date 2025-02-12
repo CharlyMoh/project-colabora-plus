@@ -14,7 +14,7 @@ const AgregarIntegrantesScreen = () => {
 
   const eliminarIntegrante = (index) => {
     const nuevaLista = integrantes.filter((_, i) => i !== index);
-    setIntegrantes(nuevaLista);
+    setIntegrantes(nuevaLista); 
   };
 
   return (
