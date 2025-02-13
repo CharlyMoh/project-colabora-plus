@@ -1,17 +1,25 @@
-import {View, Text, StyleSheet} from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import ProjectDetail from './src/screens/ProjectDetails';
 import TaskDetailAdmin from './src/screens/TaskScreenAdmin';
 import CalendarScreen from './src/screens/CalendarMenu';
 import ProjectScreen from './src/screens/ProjectScreen';
-
-
+import ProyectosScreen from './src/screens/HomeScreen';
+import TareasScreen from './src/screens/TaskScreenUser';
+import AgregarIntegrantesScreen from './src/screens/ProjectScreen2';
+import ConfiguracionScreen from './src/screens/Settings';
 
 const App = () => {
-  
-  return(
-    //Aqui se llaman todos los componentes a mostrar
-    <CalendarScreen/>
-  )
-}
+  return (
+    <View>
+      {/* Puedes renderizar varios componentes, uno por uno */}
+      <CalendarScreen />
+      {/* Otros componentes que quieras incluir */}
+      {/* <ProyectosScreen /> */}
+      {/* <TareasScreen /> */}
+      {/* <AgregarIntegrantesScreen /> */}
+    </View>
+  );
+};
 
 export default App;
