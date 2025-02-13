@@ -4,30 +4,33 @@ import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
 const CalendarScreen = () => {
     return (
         <SafeAreaView style={styles.container}>
+            {/* Header con título y logo */}
             <View style={styles.header}>
                 <Text style={styles.title}>COLABORA+</Text>
                 <Text style={styles.logo}>LOGO</Text>
             </View>
 
-            <View style={styles.messageContainer}>
-                <Text style={styles.messageText}>NO HAY PENDIENTES</Text>
-            </View>
-
-            
+            {/* Espacio para el calendario */}
             <View style={styles.calendarPlaceholder}>
                 <Text style={styles.placeholderText}>Calendario aquí (API de Google)</Text>
+            </View>
+
+            {/* Espacio para "NO HAY PENDIENTES" con fondo gris */}
+            <View style={styles.pendingContainer}>
+                <Text style={styles.messageText}>NO HAY PENDIENTES</Text>
             </View>
         </SafeAreaView>
     );
 };
 
-// Styles
+// Estilos
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
         backgroundColor: '#fff',
-        alignItems: 'center',
+        marginLeft: 10, // Espacio en el borde izquierdo
+        marginRight: 10, // Espacio en el borde derecho
     },
     header: {
         alignItems: 'center',
@@ -43,29 +46,31 @@ const styles = StyleSheet.create({
         color: '#888',
         marginTop: 8,
     },
-    messageContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    messageText: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#555',
-    },
     calendarPlaceholder: {
-        flex: 2,
+        flex: 2, // Más espacio para el calendario
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 8,
-        width: '100%',
         marginBottom: 20,
     },
     placeholderText: {
         fontSize: 16,
         color: '#888',
+    },
+    pendingContainer: {
+        flex: 1, // Menos espacio para "NO HAY PENDIENTES"
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#D9D9D9', // Fondo gris
+        borderRadius: 8,
+        padding: 16,
+    },
+    messageText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#555',
     },
 });
 

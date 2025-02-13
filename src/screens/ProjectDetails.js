@@ -49,7 +49,8 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 16,
+        marginBottom: 20,
+        marginBlockStart: 20,
         textAlign: 'center',
     },
     subtitle: {
@@ -67,13 +68,15 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: 16,
         marginBottom: 16,
+        marginLeft:16,
+        marginRight: 16,
         backgroundColor: '#D9D9D9'
     },
     memberContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: '#e0f7fa', // Color de fondo para cada integrante
+        backgroundColor: '#e0f7fa',
         padding: 10,
         borderRadius: 8,
         marginBottom: 8,
@@ -84,7 +87,7 @@ const styles = StyleSheet.create({
     },
     memberProgress: {
         fontSize: 16,
-        color: '#00796b', // Color del texto de progreso
+        color: '#00796b', 
     },
 });
 
