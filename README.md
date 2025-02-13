@@ -44,7 +44,7 @@ o	Aldo_Misael: Rama de desarrollo funcionalidades asignadas a Aldo.
 
 6. Wireframes/Mockups de la Aplicación
 Diseños realizados en figma
-https://www.figma.com/proto/s27EcFeyDyLU0SUeH9OJj6/Untitled?node-id=0-1&t=kHrkd3HiTxlMrau5-1
+https://www.figma.com/design/s27EcFeyDyLU0SUeH9OJj6/Untitled?node-id=0-1&m=dev&t=kHrkd3HiTxlMrau5-1
 
 7. Diagrama de Flujo de la Aplicación
 ![image](https://github.com/user-attachments/assets/67605f12-f6fb-4110-9762-7e71a396989c)
