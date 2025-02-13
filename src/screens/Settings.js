@@ -1,14 +1,13 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Switch } from 'react-native';
+import HomeButton from '../components/HomeButton';
 
 const ConfiguracionScreen = () => {
   return (
     <View style={styles.container}>
       {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.homeButton}>
-          <Text style={styles.iconText}>🏠</Text>
-        </TouchableOpacity>
+      <View style={styles.header}> 
+      <HomeButton />
         <Text style={styles.title}>COLABORA +</Text>
         <View style={styles.logoContainer}>
           <Text style={styles.logoText}>LOGO</Text>

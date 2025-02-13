@@ -1,7 +1,13 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { MaterialIcons } from '@expo/vector-icons';
+import BottomNavBar from '../components/BottomNavBar';
 
-const ProyectosScreen = () => {
+
+const HomeScreen = () => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -17,70 +23,28 @@ const ProyectosScreen = () => {
         <Text style={styles.projectsTitle}>PROYECTOS</Text>
         <ScrollView>
           <View style={styles.projectsGrid}>
-            <View style={styles.projectCard}>
-              <TouchableOpacity>
-                <Text style={styles.iconText}>...</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.projectCard}>
-              <TouchableOpacity>
-                <Text style={styles.iconText}>...</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.projectCard}>
-              <TouchableOpacity>
-                <Text style={styles.iconText}>...</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.projectCard}>
-              <TouchableOpacity>
-                <Text style={styles.iconText}>...</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.projectCard}>
-              <TouchableOpacity>
-                <Text style={styles.iconText}>...</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.projectCard}>
-              <TouchableOpacity>
-                <Text style={styles.iconText}>...</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.projectCard}>
-              <TouchableOpacity>
-                <Text style={styles.iconText}>...</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.projectCard}>
-              <TouchableOpacity>
-                <Text style={styles.iconText}>...</Text>
-              </TouchableOpacity>
-            </View>
+            {[...Array(8)].map((_, index) => (
+              <View key={index} style={styles.projectCard}>
+                <TouchableOpacity>
+                  <Text style={styles.iconText}>...</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
           </View>
         </ScrollView>
       </View>
 
       {/* Crear Proyecto */}
-      <TouchableOpacity style={styles.createProjectButton}>
+      <TouchableOpacity style={styles.createProjectButton} onPress={() => navigation.navigate('ProjectScreen')} >
         <Text style={styles.createProjectText}>CREAR PROYECTO</Text>
         <View style={styles.plusIconContainer}>
           <Text style={styles.iconText}>+</Text>
         </View>
       </TouchableOpacity>
 
-      {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity>
-          <Text style={styles.iconText}>📅</Text>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={styles.iconText}>🏠</Text>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={styles.iconText}>⚙️</Text>
-        </TouchableOpacity>
-      </View>
+      {/* Barra de navegación en la parte inferior */}
+      <BottomNavBar />
+      
     </View>
   );
 };
@@ -116,6 +80,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E0E0E0',
     padding: 16,
     borderRadius: 16,
+    flex: 1, // Para ocupar espacio correctamente y evitar solapamientos
   },
   projectsTitle: {
     fontSize: 20,
@@ -142,6 +107,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 16,
     marginTop: 16,
+    marginBottom: 15,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -155,19 +121,6 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 50,
   },
-  bottomNav: {
-    backgroundColor: '#D3D3D3',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    padding: 16,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    marginTop: 16,
-  },
-  iconText: {
-    fontSize: 20,
-    color: 'white',
-  },
 });
 
-export default ProyectosScreen;
+export default HomeScreen;

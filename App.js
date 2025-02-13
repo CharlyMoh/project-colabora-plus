@@ -1,15 +1,23 @@
 import React from 'react';
-//import { View, Text, StyleSheet } from 'react-native';
-import ProyectosScreen from './src/screens/HomeScreen';
-import TareasScreen from './src/screens/TaskScreenUser';
-import AgregarIntegrantesScreen from './src/screens/ProjectScreen2';
-import ConfiguracionScreen from './src/screens/Settings'
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+
+// Importar todas las pantallas
+import HomeScreen from './src/screens/HomeScreen';
+import SettingsScreen from './src/screens/Settings';
+import CalendarMenu from './src/screens/CalendarMenu';
+const Stack = createStackNavigator();
+
 const App = () => {
   return (
-    <ProyectosScreen />
-    //<TareasScreen/>
-    //<AgregarIntegrantesScreen />
-    //<ConfiguracionScreen/>
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Settings" component={SettingsScreen} />
+        <Stack.Screen name="CalendarMenu" component={CalendarMenu} />
+        
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 

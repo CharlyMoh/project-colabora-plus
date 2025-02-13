@@ -1,11 +1,12 @@
 import React from 'react';
 import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
-
+import HomeButton from '../components/HomeButton';
 const CalendarScreen = () => {
     return (
         <SafeAreaView style={styles.container}>
             {/* Header con título y logo */}
             <View style={styles.header}>
+                <HomeButton/>
                 <Text style={styles.title}>COLABORA+</Text>
                 <Text style={styles.logo}>LOGO</Text>
             </View>
@@ -33,10 +34,14 @@ const styles = StyleSheet.create({
         marginRight: 10, // Espacio en el borde derecho
     },
     header: {
+        flexDirection:'row',
         alignItems: 'center',
         marginBottom: 20,
+        marginLeft: 10,
+        marginTop: 10,
     },
     title: {
+        marginLeft: 10,
         fontSize: 24,
         fontWeight: 'bold',
         color: '#000',
