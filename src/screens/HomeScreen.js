@@ -25,9 +25,11 @@ const HomeScreen = () => {
           <View style={styles.projectsGrid}>
             {[...Array(8)].map((_, index) => (
               <View key={index} style={styles.projectCard}>
-                <TouchableOpacity>
-                  <Text style={styles.iconText}>...</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('TaskScreenAdmin')}>
+                 <Text style={styles.iconText}>...</Text>
                 </TouchableOpacity>
+s
+
               </View>
             ))}
           </View>

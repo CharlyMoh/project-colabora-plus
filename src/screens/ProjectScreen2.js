@@ -1,25 +1,46 @@
-import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { SafeAreaView, View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+
+import { useNavigation } from '@react-navigation/native';
 
 const AgregarIntegrantesScreen = () => {
+  const navigation = useNavigation();
+  const [nombre, setNombre] = useState('');
+  const [integrantes, setIntegrantes] = useState([]);
+
+  const agregarIntegrante = () => {
+    if (nombre.trim() !== '') {
+      setIntegrantes([...integrantes, nombre]);
+      setNombre('');
+    }
+  };
+
+  const eliminarIntegrante = (index) => {
+    const nuevos = [...integrantes];
+    nuevos.splice(index, 1);
+    setIntegrantes(nuevos);
+  };
+
   return (
-    <View style={styles.container}>
-      {/* Header */}
+    <SafeAreaView style={styles.container}>
+      {/* Encabezado */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.homeButton}>
+        <TouchableOpacity style={styles.homeButton} onPress={() => navigation.navigate('Home')}>
           <Text style={styles.iconText}>🏠</Text>
         </TouchableOpacity>
         <Text style={styles.title}>COLABORA +</Text>
       </View>
 
-      {/* Agregar Integrantes */}
+      {/* Input de Integrante */}
       <View style={styles.inputContainer}>
         <Text style={styles.sectionTitle}>Agregar integrantes</Text>
         <TextInput
           style={styles.input}
           placeholder="Nombre del integrante"
+          value={nombre}
+          onChangeText={setNombre}
         />
-        <TouchableOpacity style={styles.addButton}>
+        <TouchableOpacity style={styles.addButton} onPress={agregarIntegrante}>
           <Text style={styles.addButtonText}>Agregar integrante</Text>
         </TouchableOpacity>
       </View>
@@ -27,33 +48,29 @@ const AgregarIntegrantesScreen = () => {
       {/* Lista de Integrantes */}
       <Text style={styles.sectionTitle}>Lista de integrantes agregados</Text>
       <View style={styles.listContainer}>
-        <View style={styles.listItem}>
-          <Text style={styles.integranteText}>Integrante 1</Text>
-          <TouchableOpacity style={styles.deleteButton}>
-            <Text style={styles.deleteButtonText}>Eliminar</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.listItem}>
-          <Text style={styles.integranteText}>Integrante 2</Text>
-          <TouchableOpacity style={styles.deleteButton}>
-            <Text style={styles.deleteButtonText}>Eliminar</Text>
-          </TouchableOpacity>
-        </View>
+        {integrantes.map((item, index) => (
+          <View key={index} style={styles.listItem}>
+            <Text>{item}</Text>
+            <TouchableOpacity style={styles.deleteButton} onPress={() => eliminarIntegrante(index)}>
+              <Text style={styles.deleteButtonText}>Eliminar</Text>
+            </TouchableOpacity>
+          </View>
+        ))}
       </View>
 
       {/* Botón Finalizar */}
-      <TouchableOpacity style={styles.finalButton}>
-        <Text style={styles.finalButtonText}>FINALIZAR!</Text>
+      <TouchableOpacity style={styles.finishButton}>
+        <Text style={styles.finishButtonText}>FINALIZAR!</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
     padding: 16,
+    backgroundColor: '#fff',
   },
   header: {
     flexDirection: 'row',
@@ -64,7 +81,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#D3D3D3',
     padding: 10,
     borderRadius: 8,
-    marginRight: 16,
+    marginRight: 10,
   },
   iconText: {
     fontSize: 20,
@@ -85,20 +102,18 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
-    backgroundColor: '#A9A9A9',
+    backgroundColor: '#f2f2f2',
     borderRadius: 20,
     padding: 10,
-    marginBottom: 16,
-    fontSize: 16,
+    marginBottom: 10,
   },
   addButton: {
-    backgroundColor: '#B9FBC0',
-    padding: 16,
+    backgroundColor: '#B0F7B0',
+    padding: 12,
     borderRadius: 10,
     alignItems: 'center',
   },
   addButtonText: {
-    fontSize: 16,
     fontWeight: 'bold',
   },
   listContainer: {
@@ -110,32 +125,26 @@ const styles = StyleSheet.create({
   listItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
     marginBottom: 10,
   },
-  integranteText: {
-    fontSize: 16,
-  },
   deleteButton: {
-    backgroundColor: '#F56565',
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    borderRadius: 10,
+    backgroundColor: '#f66',
+    padding: 6,
+    borderRadius: 6,
   },
   deleteButtonText: {
-    color: '#FFFFFF',
+    color: '#fff',
     fontWeight: 'bold',
   },
-  finalButton: {
+  finishButton: {
     backgroundColor: '#00FF00',
     padding: 20,
     borderRadius: 10,
     alignItems: 'center',
   },
-  finalButtonText: {
+  finishButtonText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#000000',
   },
 });
 

@@ -1,14 +1,19 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+
 
 const TareasScreen = () => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.homeButton}>
-          <Text style={styles.iconText}>🏠</Text>
-        </TouchableOpacity>
+      <TouchableOpacity style={styles.homeButton} onPress={() => navigation.navigate('Home')}>
+        <Text style={styles.iconText}>🏠</Text>
+      </TouchableOpacity>
+
         <Text style={styles.title}>COLABORA +</Text>
         <View style={styles.logoContainer}>
           <Text style={styles.logoText}>LOGO</Text>
