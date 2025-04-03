@@ -3,11 +3,32 @@ import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-nati
 import { useNavigation } from '@react-navigation/native';
 import { useProyectos } from '../context/ProyectoContext';
 import { useAuth } from '../context/AuthContext';
+import BottomNavBar from '../components/BottomNavBar';
 
 const UserHome = () => {
   const navigation = useNavigation();
-  const { proyectos } = useProyectos();
-  const { rol } = useAuth();
+  const { proyectos, setProyectoSeleccionado } = useProyectos();
+  const { rol, usuarioActual, setRol, setUsuarioActual } = useAuth();
+
+  const proyectosDelUsuario = proyectos.filter(p =>
+    p.integrantes.includes(usuarioActual)
+  );
+
+  const handleVerDetalles = (index) => {
+    setProyectoSeleccionado(index);
+    navigation.navigate('ProjectDetails');
+  };
+
+  const handleCambiarEstado = (index) => {
+    setProyectoSeleccionado(index);
+    navigation.navigate('TaskStatusScreen');
+  };
+
+  const handleLogout = () => {
+    setRol(null);
+    setUsuarioActual(null);
+    navigation.navigate('Login');
+  };
 
   return (
     <View style={styles.container}>
@@ -17,6 +38,9 @@ const UserHome = () => {
         </Text>
         <View style={styles.logoContainer}>
           <Text style={styles.logoText}>LOGO</Text>
+          <TouchableOpacity onPress={handleLogout}>
+            <Text style={styles.logoutIcon}>🚪</Text>
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -24,29 +48,112 @@ const UserHome = () => {
         <Text style={styles.projectsTitle}>PROYECTOS</Text>
         <ScrollView>
           <View style={styles.projectsGrid}>
-            {proyectos.map((proyecto, index) => (
-              <View key={index} style={styles.projectCard}>
-                <Text style={styles.projectName}>{proyecto.nombre}</Text>
-                <Text style={styles.projectDetails}>
-                  {proyecto.integrantes.length} integrante(s)
-                </Text>
-                <Text style={styles.projectDetails}>
-                  {proyecto.fechaInicio} - {proyecto.fechaFin}
-                </Text>
-                <TouchableOpacity onPress={() => navigation.navigate('TaskScreenUser')}>
-                  <Text style={styles.iconText}>...</Text>
+            {proyectosDelUsuario.map((proyecto, index) => {
+              const indiceReal = proyectos.findIndex(p => p.nombre === proyecto.nombre);
+              return (
+                <TouchableOpacity
+                  key={indiceReal}
+                  style={styles.projectCard}
+                  onPress={() => handleVerDetalles(indiceReal)}
+                >
+                  <Text style={styles.projectName}>{proyecto.nombre}</Text>
+                  <Text style={styles.projectDetails}>
+                    {proyecto.integrantes.length} integrante(s)
+                  </Text>
+                  <Text style={styles.projectDetails}>
+                    {proyecto.fechaInicio} - {proyecto.fechaFin}
+                  </Text>
+                  <TouchableOpacity
+                    style={styles.buttonDots}
+                    onPress={(e) => {
+                      e.stopPropagation(); // evita que se ejecute el onPress del recuadro
+                      handleCambiarEstado(indiceReal);
+                    }}
+                  >
+                    <Text style={styles.iconText}>...</Text>
+                  </TouchableOpacity>
                 </TouchableOpacity>
-              </View>
-            ))}
+              );
+            })}
           </View>
         </ScrollView>
       </View>
+
+      <TouchableOpacity
+        style={styles.createProjectButton}
+        onPress={() => navigation.navigate('ProjectScreen')}
+      >
+        <Text style={styles.createProjectText}>CREAR PROYECTO</Text>
+        
+      </TouchableOpacity>
+      <BottomNavBar />
+
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  // copia los estilos de HomeScreen
+  container: { flex: 1, backgroundColor: '#FFFFFF', padding: 16 },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16
+  },
+  title: { fontSize: 24, fontWeight: 'bold' },
+  logoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#D3D3D3',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 6
+  },
+  logoText: { fontSize: 12 },
+  logoutIcon: { fontSize: 20, marginLeft: 10 },
+  rolText: {
+    fontSize: 12, fontWeight: 'bold', color: '#555',
+    backgroundColor: '#eee', paddingHorizontal: 8,
+    paddingVertical: 4, borderRadius: 8, marginLeft: 10,
+  },
+  projectsContainer: {
+    backgroundColor: '#E0E0E0', padding: 16,
+    borderRadius: 16, flex: 1
+  },
+  projectsTitle: {
+    fontSize: 20, fontWeight: 'bold', marginBottom: 10
+  },
+  projectsGrid: {
+    flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'
+  },
+  projectCard: {
+    width: '48%', backgroundColor: '#A9A9A9', borderRadius: 16,
+    marginBottom: 16, padding: 12, justifyContent: 'space-between',
+    shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3, shadowRadius: 3.84, elevation: 4,
+  },
+  projectName: {
+    fontSize: 16, fontWeight: 'bold', color: '#fff', marginBottom: 4
+  },
+  projectDetails: {
+    fontSize: 12, color: '#f2f2f2', marginBottom: 2
+  },
+  iconText: {
+    fontSize: 18, color: '#fff', textAlign: 'center'
+  },
+  buttonDots: {
+    borderWidth: 1, borderColor: '#fff', paddingVertical: 4,
+    paddingHorizontal: 10, borderRadius: 6, alignSelf: 'flex-end'
+  },
+  createProjectButton: {
+    backgroundColor: '#28a745', padding: 18, borderRadius: 12,
+    marginTop: 20, marginBottom: 15, alignItems: 'center',
+    shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5,
+  },
+  createProjectText: {
+    fontSize: 18, fontWeight: 'bold', color: '#fff', textAlign: 'center'
+  },
 });
 
 export default UserHome;

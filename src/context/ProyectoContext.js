@@ -1,22 +1,38 @@
 import React, { createContext, useState, useContext } from 'react';
 
-// Creamos el contexto
 const ProyectoContext = createContext();
 
-// Hook para usar el contexto fácilmente
 export const useProyectos = () => useContext(ProyectoContext);
 
-// Proveedor del contexto (envolverá tu App)
 export const ProyectoProvider = ({ children }) => {
   const [proyectos, setProyectos] = useState([]);
+  const [proyectoSeleccionado, setProyectoSeleccionado] = useState(null); // nuevo
 
-  // Función para agregar un nuevo proyecto
   const agregarProyecto = (proyecto) => {
-    setProyectos((prev) => [...prev, proyecto]);
+    const proyectoConTareas = { ...proyecto, tareas: [] }; // agrega campo "tareas"
+    setProyectos((prev) => [...prev, proyectoConTareas]);
   };
 
+  const agregarTareaAProyecto = (index, tarea) => {
+    setProyectos(prev => {
+      const copia = [...prev];
+      const tareaConProgreso = {
+        ...tarea,
+        progreso: copia[index].integrantes.map(usuario => ({
+          usuario,
+          estado: 'Pendiente'
+        }))
+      };
+      copia[index].tareas = [...(copia[index].tareas || []), tareaConProgreso];
+      return copia;
+    });
+  };
+  
+
   return (
-    <ProyectoContext.Provider value={{ proyectos, agregarProyecto }}>
+    <ProyectoContext.Provider
+      value={{ proyectos, agregarProyecto, agregarTareaAProyecto, proyectoSeleccionado, setProyectoSeleccionado }}
+    >
       {children}
     </ProyectoContext.Provider>
   );

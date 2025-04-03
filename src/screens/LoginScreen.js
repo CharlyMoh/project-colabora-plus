@@ -5,36 +5,29 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert,
   SafeAreaView
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useAuth } from '../context/AuthContext'; // ✅ Asegúrate de importar esto correctamente
+import { useAuth } from '../context/AuthContext';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
+  const { login, rol } = useAuth(); // usamos login del contexto
   const [usuario, setUsuario] = useState('');
   const [contrasena, setContrasena] = useState('');
-  const { setRol } = useAuth(); // ✅ ya debería funcionar
 
   const handleLogin = () => {
-    if (usuario === 'admin' && contrasena === '123') {
-      setRol('admin');
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Home' }],
-      });
-    } else if (usuario === 'user' && contrasena === '123') {
-      setRol('user');
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Home' }], // 👈 Mismo Home para user y admin
-      });
+    const success = login(usuario, contrasena);
+    if (success) {
+      if (usuario === 'admin') {
+        navigation.navigate('Home');
+      } else {
+        navigation.navigate('UserHome');
+      }
     } else {
-      Alert.alert('Error', 'Credenciales incorrectas');
+      alert('Credenciales inválidas');
     }
   };
-  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -62,7 +55,6 @@ const LoginScreen = () => {
     </SafeAreaView>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {

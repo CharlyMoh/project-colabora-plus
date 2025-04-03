@@ -12,6 +12,10 @@ import { ProyectoProvider } from './src/context/ProyectoContext'; // Asegúrate 
 import LoginScreen from './src/screens/LoginScreen';
 import { AuthProvider } from './src/context/AuthContext'; // <== nuevo
 import UserHome from './src/screens/UserHome'; // Asegúrate de tener esta pantalla
+import ProjectDetail from './src/screens/ProjectDetails'; // <-- Asegúrate que el nombre del archivo y ruta estén correctos
+import TaskStatusScreen from './src/screens/TaskStatusScreen';
+
+
 
 const Stack = createStackNavigator();
 
@@ -30,6 +34,9 @@ const App = () => {
           <Stack.Screen name="TaskScreenUser" component={TaskScreenUser} />
           <Stack.Screen name="TaskScreenAdmin" component={TaskScreenAdmin} />
           <Stack.Screen name="UserHome" component={UserHome} />
+          <Stack.Screen name="ProjectDetails" component={ProjectDetail} />
+          <Stack.Screen name="TaskStatusScreen" component={TaskStatusScreen} />
+
         </Stack.Navigator>
       </NavigationContainer>
     </ProyectoProvider>
