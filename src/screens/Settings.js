@@ -1,13 +1,23 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Switch } from 'react-native';
 import HomeButton from '../components/HomeButton';
+import { useNavigation } from '@react-navigation/native';
 
 const ConfiguracionScreen = () => {
+  const navigation = useNavigation();
+
+  const handleLogout = () => {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    });
+  };
+
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}> 
-      <HomeButton />
+        <HomeButton />
         <Text style={styles.title}>COLABORA +</Text>
         <View style={styles.logoContainer}>
           <Text style={styles.logoText}>LOGO</Text>
@@ -25,7 +35,7 @@ const ConfiguracionScreen = () => {
       </View>
 
       {/* Botón Cerrar Sesión */}
-      <TouchableOpacity style={styles.logoutButton}>
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.logoutButtonText}>Cerrar sesión</Text>
       </TouchableOpacity>
     </View>

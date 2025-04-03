@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
-import { SafeAreaView, View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
-
-import { useNavigation } from '@react-navigation/native';
+import { SafeAreaView, View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useProyectos } from '../context/ProyectoContext';
 
 const AgregarIntegrantesScreen = () => {
   const navigation = useNavigation();
-  const [nombre, setNombre] = useState('');
+  const route = useRoute();
+  const { agregarProyecto } = useProyectos();
+
+  const { nombre, descripcion, fechaInicio, fechaFin } = route.params;
+
+  const [nombreIntegrante, setNombreIntegrante] = useState('');
   const [integrantes, setIntegrantes] = useState([]);
 
   const agregarIntegrante = () => {
-    if (nombre.trim() !== '') {
-      setIntegrantes([...integrantes, nombre]);
-      setNombre('');
+    if (nombreIntegrante.trim() !== '') {
+      setIntegrantes([...integrantes, nombreIntegrante]);
+      setNombreIntegrante('');
     }
   };
 
@@ -19,6 +24,18 @@ const AgregarIntegrantesScreen = () => {
     const nuevos = [...integrantes];
     nuevos.splice(index, 1);
     setIntegrantes(nuevos);
+  };
+
+  const finalizarProyecto = () => {
+    const nuevoProyecto = {
+      nombre,
+      descripcion,
+      fechaInicio,
+      fechaFin,
+      integrantes
+    };
+    agregarProyecto(nuevoProyecto);
+    navigation.navigate('Home');
   };
 
   return (
@@ -37,8 +54,8 @@ const AgregarIntegrantesScreen = () => {
         <TextInput
           style={styles.input}
           placeholder="Nombre del integrante"
-          value={nombre}
-          onChangeText={setNombre}
+          value={nombreIntegrante}
+          onChangeText={setNombreIntegrante}
         />
         <TouchableOpacity style={styles.addButton} onPress={agregarIntegrante}>
           <Text style={styles.addButtonText}>Agregar integrante</Text>
@@ -59,7 +76,7 @@ const AgregarIntegrantesScreen = () => {
       </View>
 
       {/* Botón Finalizar */}
-      <TouchableOpacity style={styles.finishButton}>
+      <TouchableOpacity style={styles.finishButton} onPress={finalizarProyecto}>
         <Text style={styles.finishButtonText}>FINALIZAR!</Text>
       </TouchableOpacity>
     </SafeAreaView>

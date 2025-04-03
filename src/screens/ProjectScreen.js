@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -13,16 +13,30 @@ import { useNavigation } from '@react-navigation/native';
 const ProjectScreen = () => {
   const navigation = useNavigation();
 
+  const [fechaInicio, setFechaInicio] = useState('');
+  const [fechaFin, setFechaFin] = useState('');
+  const [nombre, setNombre] = useState('');
+  const [descripcion, setDescripcion] = useState('');
+
   const handleGoHome = () => {
     navigation.navigate('Home');
   };
 
-  const [fechaInicio, setFechaInicio] = React.useState('');
-  const [fechaFin, setFechaFin] = React.useState('');
+  const handleSiguiente = () => {
+    if (nombre && descripcion && fechaInicio && fechaFin) {
+      navigation.navigate('ProjectScreen2', {
+        nombre,
+        descripcion,
+        fechaInicio,
+        fechaFin,
+      });
+    } else {
+      alert('Por favor completa todos los campos.');
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={handleGoHome} style={styles.homeButton}>
           <Text style={styles.iconText}>🏠</Text>
@@ -30,26 +44,27 @@ const ProjectScreen = () => {
         <Text style={styles.title}>COLABORA +</Text>
       </View>
 
-      {/* Nombre del proyecto */}
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Nombre del proyecto</Text>
         <TextInput
           style={styles.input}
           placeholder="Ingresa el nombre del proyecto"
+          value={nombre}
+          onChangeText={setNombre}
         />
       </View>
 
-      {/* Descripción */}
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Descripción</Text>
         <TextInput
           style={[styles.input, styles.multilineInput]}
           placeholder="Ingresa la descripción del proyecto"
           multiline
+          value={descripcion}
+          onChangeText={setDescripcion}
         />
       </View>
 
-      {/* Fecha de inicio */}
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Inicio</Text>
         <View style={styles.dateInputContainer}>
@@ -63,7 +78,6 @@ const ProjectScreen = () => {
         </View>
       </View>
 
-      {/* Fecha de finalización */}
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Finalización</Text>
         <View style={styles.dateInputContainer}>
@@ -77,12 +91,8 @@ const ProjectScreen = () => {
         </View>
       </View>
 
-      {/* Botón siguiente */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.nextButton}
-          onPress={() => navigation.navigate('ProjectScreen2')}
-        >
+        <TouchableOpacity style={styles.nextButton} onPress={handleSiguiente}>
           <Text style={styles.buttonText}>Siguiente</Text>
         </TouchableOpacity>
       </View>
@@ -90,7 +100,6 @@ const ProjectScreen = () => {
   );
 };
 
-// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
