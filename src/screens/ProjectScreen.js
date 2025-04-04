@@ -1,185 +1,121 @@
-import React, { useState } from 'react';
-import {
-  SafeAreaView,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet
-} from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert ,Platform} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useAuth } from '../context/AuthContext';
 
 const ProjectScreen = () => {
   const navigation = useNavigation();
+  const { usuarioActual } = useAuth();
 
-  const [fechaInicio, setFechaInicio] = useState('');
-  const [fechaFin, setFechaFin] = useState('');
-  const [nombre, setNombre] = useState('');
+  const [usuarios, setUsuarios] = useState([]);
+  const [nombreProyecto, setNombreProyecto] = useState('');
   const [descripcion, setDescripcion] = useState('');
+  const [fechaFin, setFechaFin] = useState('');
+  const [integrantesSeleccionados, setIntegrantesSeleccionados] = useState([]);
 
-  const handleGoHome = () => {
-    navigation.navigate('Home');
+  useEffect(() => {
+    fetch('http://localhost:3000/api/users/all')
+      .then(res => res.json())
+      .then(data => setUsuarios(data))
+      .catch(err => console.error("Error cargando usuarios:", err));
+  }, []);
+
+  const toggleUsuario = (id) => {
+    setIntegrantesSeleccionados(prev =>
+      prev.includes(id) ? prev.filter(uid => uid !== id) : [...prev, id]
+    );
   };
 
-  const handleSiguiente = () => {
-    if (nombre && descripcion && fechaInicio && fechaFin) {
-      navigation.navigate('ProjectScreen2', {
-        nombre,
-        descripcion,
-        fechaInicio,
-        fechaFin,
+  const handleCrearProyecto = async () => {
+    if (isNaN(Date.parse(fechaFin))) {
+      Alert.alert('Fecha inválida', 'Por favor ingresa una fecha válida en formato YYYY-MM-DD');
+      return;
+    }
+  
+    try {
+      const response = await fetch('http://localhost:3000/api/projects/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          nameProject: nombreProyecto,
+          description: descripcion,
+          userInCharge: usuarioActual.name,
+          teammates: [...integrantesSeleccionados],
+          state: 'Activo',
+          endDate: fechaFin
+        })
       });
-    } else {
-      alert('Por favor completa todos los campos.');
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        if (Platform.OS === 'web') {
+          alert('Proyecto creado exitosamente');
+          navigation.navigate('Home'); // Redirección directa en web
+        } else {
+          Alert.alert('Éxito', 'Proyecto creado exitosamente', [
+            {
+              text: 'Aceptar',
+              onPress: () => navigation.navigate('Home')
+            }
+          ]);
+        }
+      } else {
+        Alert.alert('Error', data.error || 'Error al crear el proyecto');
+      }
+    } catch (error) {
+      console.error('Error al crear el proyecto:', error);
+      alert('Error de conexión con el servidor');
     }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={handleGoHome} style={styles.homeButton}>
-          <Text style={styles.iconText}>🏠</Text>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>Nuevo Proyecto</Text>
+      <TextInput style={styles.input} placeholder="Nombre del proyecto" value={nombreProyecto} onChangeText={setNombreProyecto} />
+      <TextInput style={styles.input} placeholder="Descripción" value={descripcion} onChangeText={setDescripcion} />
+      <TextInput style={styles.input} placeholder="Fecha fin (YYYY-MM-DD)" value={fechaFin} onChangeText={setFechaFin} />
+
+      <Text style={styles.subtitle}>Selecciona integrantes:</Text>
+      {usuarios.map(usuario => (
+        <TouchableOpacity
+          key={usuario._id}
+          style={[styles.userItem, integrantesSeleccionados.includes(usuario._id) && styles.selectedUser]}
+          onPress={() => toggleUsuario(usuario._id)}
+        >
+          <Text>{usuario.name} ({usuario.email})</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>COLABORA +</Text>
-      </View>
+      ))}
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Nombre del proyecto</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Ingresa el nombre del proyecto"
-          value={nombre}
-          onChangeText={setNombre}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Descripción</Text>
-        <TextInput
-          style={[styles.input, styles.multilineInput]}
-          placeholder="Ingresa la descripción del proyecto"
-          multiline
-          value={descripcion}
-          onChangeText={setDescripcion}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Inicio</Text>
-        <View style={styles.dateInputContainer}>
-          <TextInput
-            style={styles.dateInput}
-            placeholder="DD/MM/AAAA"
-            value={fechaInicio}
-            onChangeText={setFechaInicio}
-          />
-          <MaterialIcons name="calendar-today" size={24} color="#007bff" />
-        </View>
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Finalización</Text>
-        <View style={styles.dateInputContainer}>
-          <TextInput
-            style={styles.dateInput}
-            placeholder="DD/MM/AAAA"
-            value={fechaFin}
-            onChangeText={setFechaFin}
-          />
-          <MaterialIcons name="calendar-today" size={24} color="#007bff" />
-        </View>
-      </View>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.nextButton} onPress={handleSiguiente}>
-          <Text style={styles.buttonText}>Siguiente</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+      <TouchableOpacity style={styles.button} onPress={handleCrearProyecto}>
+        <Text style={styles.buttonText}>Crear Proyecto</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#fff'
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20
-  },
-  inputContainer: {
-    marginBottom: 20
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    backgroundColor: '#fff',
-    marginLeft: 8
-  },
+  container: { padding: 20 },
+  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 12 },
+  subtitle: { fontSize: 16, marginVertical: 10 },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 10,
-    fontSize: 16,
-    marginLeft: 8,
-    marginRight: 8
+    borderWidth: 1, borderColor: '#ccc', borderRadius: 8,
+    padding: 12, marginBottom: 10
   },
-  multilineInput: {
-    height: 100,
-    textAlignVertical: 'top'
+  userItem: {
+    padding: 10, borderWidth: 1, borderColor: '#ccc',
+    borderRadius: 8, marginBottom: 8
   },
-  dateInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 10,
-    marginLeft: 8,
-    marginRight: 8
+  selectedUser: {
+    backgroundColor: '#cce5ff', borderColor: '#3399ff'
   },
-  dateInput: {
-    flex: 1,
-    fontSize: 16
+  button: {
+    backgroundColor: '#28a745', padding: 14,
+    borderRadius: 8, alignItems: 'center', marginTop: 20
   },
-  buttonContainer: {
-    alignItems: 'flex-end',
-    marginTop: 20,
-    marginRight: 8
-  },
-  nextButton: {
-    backgroundColor: '#28a745',
-    padding: 12,
-    borderRadius: 8,
-    width: 120,
-    alignItems: 'center'
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold'
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20
-  },
-  homeButton: {
-    backgroundColor: '#D3D3D3',
-    padding: 10,
-    borderRadius: 8,
-    marginRight: 10
-  },
-  iconText: {
-    fontSize: 20
-  }
+  buttonText: { color: '#fff', fontWeight: 'bold', fontSize: 16 }
 });
 
 export default ProjectScreen;

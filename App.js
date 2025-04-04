@@ -14,7 +14,7 @@ import { AuthProvider } from './src/context/AuthContext'; // <== nuevo
 import UserHome from './src/screens/UserHome'; // Asegúrate de tener esta pantalla
 import ProjectDetail from './src/screens/ProjectDetails'; // <-- Asegúrate que el nombre del archivo y ruta estén correctos
 import TaskStatusScreen from './src/screens/TaskStatusScreen';
-
+import CalendarEventsScreen from './src/screens/CalendarEventsScreen';
 
 
 const Stack = createStackNavigator();
@@ -26,6 +26,7 @@ const App = () => {
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="CalendarEvents" component={CalendarEventsScreen} />
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Settings" component={SettingsScreen} />
           <Stack.Screen name="CalendarMenu" component={CalendarMenu} />

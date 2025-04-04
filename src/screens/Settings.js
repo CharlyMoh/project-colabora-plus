@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Switch } from 'react-native';
 import HomeButton from '../components/HomeButton';
 import { useNavigation } from '@react-navigation/native';
+import BottomNavBar from '../components/BottomNavBar';
 
 const ConfiguracionScreen = () => {
   const navigation = useNavigation();
@@ -16,7 +17,7 @@ const ConfiguracionScreen = () => {
   return (
     <View style={styles.container}>
       {/* Header */}
-      <View style={styles.header}> 
+      <View style={styles.header}>
         <HomeButton />
         <Text style={styles.title}>COLABORA +</Text>
         <View style={styles.logoContainer}>
@@ -38,6 +39,8 @@ const ConfiguracionScreen = () => {
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.logoutButtonText}>Cerrar sesión</Text>
       </TouchableOpacity>
+
+      <BottomNavBar />
     </View>
   );
 };
@@ -54,14 +57,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
-  },
-  homeButton: {
-    backgroundColor: '#D3D3D3',
-    padding: 10,
-    borderRadius: 8,
-  },
-  iconText: {
-    fontSize: 20,
   },
   title: {
     fontSize: 24,
@@ -90,7 +85,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 10,
     alignItems: 'center',
-    marginBottom: 20,
+    marginTop: 20,
   },
   logoutButtonText: {
     fontSize: 18,

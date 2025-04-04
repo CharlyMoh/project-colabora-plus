@@ -6,11 +6,11 @@ export const useProyectos = () => useContext(ProyectoContext);
 
 export const ProyectoProvider = ({ children }) => {
   const [proyectos, setProyectos] = useState([]);
-  const [proyectoSeleccionado, setProyectoSeleccionado] = useState(null); // nuevo
+  const [proyectoSeleccionado, setProyectoSeleccionado] = useState(null);
 
   const agregarProyecto = (proyecto) => {
-    const proyectoConTareas = { ...proyecto, tareas: [] }; // agrega campo "tareas"
-    setProyectos((prev) => [...prev, proyectoConTareas]);
+    const proyectoConTareas = { ...proyecto, tareas: [] };
+    setProyectos(prev => [...prev, proyectoConTareas]);
   };
 
   const agregarTareaAProyecto = (index, tarea) => {
@@ -27,11 +27,17 @@ export const ProyectoProvider = ({ children }) => {
       return copia;
     });
   };
-  
 
   return (
     <ProyectoContext.Provider
-      value={{ proyectos, agregarProyecto, agregarTareaAProyecto, proyectoSeleccionado, setProyectoSeleccionado }}
+      value={{
+        proyectos,
+        setProyectos,
+        agregarProyecto,
+        agregarTareaAProyecto,
+        proyectoSeleccionado,
+        setProyectoSeleccionado
+      }}
     >
       {children}
     </ProyectoContext.Provider>

@@ -1,82 +1,117 @@
-import React from 'react';
-import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
-import HomeButton from '../components/HomeButton';
-const CalendarScreen = () => {
-    return (
-        <SafeAreaView style={styles.container}>
-            {/* Header con título y logo */}
-            <View style={styles.header}>
-                <HomeButton/>
-                <Text style={styles.title}>COLABORA+</Text>
-                <Text style={styles.logo}>LOGO</Text>
-            </View>
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useAuth } from '../context/AuthContext';
+import BottomNavBar from '../components/BottomNavBar';
 
-            {/* Espacio para el calendario */}
-            <View style={styles.calendarPlaceholder}>
-                <Text style={styles.placeholderText}>Calendario aquí (API de Google)</Text>
-            </View>
+const CalendarMenu = () => {
+  const navigation = useNavigation();
+  const { usuarioActual } = useAuth();
+  const [eventos, setEventos] = useState([]);
 
-            {/* Espacio para "NO HAY PENDIENTES" con fondo gris */}
-            <View style={styles.pendingContainer}>
-                <Text style={styles.messageText}>NO HAY PENDIENTES</Text>
-            </View>
-        </SafeAreaView>
-    );
+  const obtenerEventos = async () => {
+    try {
+      const res = await fetch(`http://localhost:3000/api/calendars/byUser/${usuarioActual.id}`);
+      const data = await res.json();
+      setEventos(data);
+    } catch (error) {
+      console.error('Error al obtener eventos:', error);
+    }
+  };
+
+  useEffect(() => {
+    obtenerEventos();
+  }, []);
+
+  const renderItem = ({ item }) => (
+    <View style={styles.card}>
+      <Text style={styles.titulo}>{item.title}</Text>
+      <Text style={styles.descripcion}>{item.description}</Text>
+      <Text style={styles.fecha}>
+        📅 {new Date(item.startDate).toLocaleDateString()} → {new Date(item.endDate).toLocaleDateString()}
+      </Text>
+      {item.projectId && <Text style={styles.detalle}>🔗 Proyecto relacionado</Text>}
+      {item.taskId && <Text style={styles.detalle}>📌 Tarea asignada</Text>}
+    </View>
+  );
+
+  return (
+    <View style={styles.container}>
+      {/* Botón para volver */}
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Home')}>
+        <Text style={styles.backButtonText}>← Volver</Text>
+      </TouchableOpacity>
+
+      <Text style={styles.tituloPrincipal}>📅 Mis Eventos</Text>
+
+      <FlatList
+        data={eventos}
+        renderItem={renderItem}
+        keyExtractor={(item) => item._id}
+        contentContainerStyle={styles.lista}
+        ListEmptyComponent={<Text style={styles.vacio}>No hay eventos registrados</Text>}
+      />
+
+      <BottomNavBar />
+    </View>
+  );
 };
 
-// Estilos
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 16,
-        backgroundColor: '#fff',
-        marginLeft: 10, // Espacio en el borde izquierdo
-        marginRight: 10, // Espacio en el borde derecho
-    },
-    header: {
-        flexDirection:'row',
-        alignItems: 'center',
-        marginBottom: 20,
-        marginLeft: 10,
-        marginTop: 10,
-    },
-    title: {
-        marginLeft: 10,
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#000',
-    },
-    logo: {
-        fontSize: 18,
-        color: '#888',
-        marginTop: 8,
-    },
-    calendarPlaceholder: {
-        flex: 2, // Más espacio para el calendario
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 8,
-        marginBottom: 20,
-    },
-    placeholderText: {
-        fontSize: 16,
-        color: '#888',
-    },
-    pendingContainer: {
-        flex: 1, // Menos espacio para "NO HAY PENDIENTES"
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#D9D9D9', // Fondo gris
-        borderRadius: 8,
-        padding: 16,
-    },
-    messageText: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#555',
-    },
+  container: { flex: 1, backgroundColor: '#fff', padding: 16 },
+  backButton: {
+    marginBottom: 10,
+    alignSelf: 'flex-start',
+    backgroundColor: '#4CAF50', // 💚 color visible
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    zIndex: 999 // Asegura que esté encima
+  },
+  
+  backButtonText: {
+    fontSize: 16,
+    color: '#333',
+    fontWeight: 'bold',
+  },
+  tituloPrincipal: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 12,
+  },
+  lista: {
+    paddingBottom: 100,
+  },
+  card: {
+    backgroundColor: '#f2f2f2',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+  },
+  titulo: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 6,
+  },
+  descripcion: {
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  fecha: {
+    fontSize: 12,
+    color: '#555',
+    marginBottom: 4,
+  },
+  detalle: {
+    fontSize: 12,
+    color: '#777',
+  },
+  vacio: {
+    marginTop: 20,
+    fontStyle: 'italic',
+    color: '#888',
+    textAlign: 'center',
+  },
 });
 
-export default CalendarScreen;
+export default CalendarMenu;

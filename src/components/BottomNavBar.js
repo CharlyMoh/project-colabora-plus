@@ -8,18 +8,15 @@ const BottomNavBar = () => {
 
   return (
     <View style={styles.navBar}>
-      {/* Botón de Calendario */}
-      <TouchableOpacity onPress={() => navigation.navigate('CalendarMenu')}>
-        <MaterialIcons name="calendar-today" size={30} color="black" />
-      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('CalendarEvents')}>
+  <MaterialIcons name="calendar-today" size={30} color="black" />
+</TouchableOpacity>
 
 
-      {/* Botón de Inicio */}
       <TouchableOpacity onPress={() => navigation.navigate('Home')}>
         <MaterialIcons name="home" size={30} color="black" />
       </TouchableOpacity>
 
-      {/* Botón de Configuración */}
       <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
         <MaterialIcons name="settings" size={30} color="black" />
       </TouchableOpacity>
@@ -36,7 +33,11 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
-  },
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0
+  }
 });
 
 export default BottomNavBar;

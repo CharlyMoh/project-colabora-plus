@@ -16,18 +16,37 @@ const LoginScreen = () => {
   const [usuario, setUsuario] = useState('');
   const [contrasena, setContrasena] = useState('');
 
-  const handleLogin = () => {
-    const success = login(usuario, contrasena);
-    if (success) {
-      if (usuario === 'admin') {
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/users/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: usuario,
+          password: contrasena
+        })
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        console.log("Login exitoso:", data.user);
+        login(data.user); // usar login del contexto
         navigation.navigate('Home');
+
       } else {
-        navigation.navigate('UserHome');
+        alert(data.error || "Credenciales incorrectas");
       }
-    } else {
-      alert('Credenciales inválidas');
+  
+    } catch (error) {
+      console.error("Error en login:", error);
+      alert("No se pudo conectar con el servidor");
     }
   };
+  
+  
 
   return (
     <SafeAreaView style={styles.container}>
