@@ -31,7 +31,7 @@ const TaskScreenAdmin = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/api/tasks/add', {
+      const response = await fetch('https://backend-colabora-plus.onrender.com/api/tasks/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

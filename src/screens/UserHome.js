@@ -14,7 +14,6 @@ const UserHome = () => {
 
   useFocusEffect(
     useCallback(() => {
-      // Aquí puedes volver a cargar los proyectos si tienes una función
     }, [proyectos])
   );
 

@@ -9,7 +9,7 @@ const CalendarEventsScreen = () => {
 
   const obtenerEventos = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/api/calendars/byUser/${usuarioActual.id}`);
+      const res = await fetch(`https://backend-colabora-plus.onrender.com/api/calendars/byUser/${usuarioActual.id}`);
       const data = await res.json();
       setEventos(data);
     } catch (error) {

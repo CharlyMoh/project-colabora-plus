@@ -12,7 +12,7 @@ const HomeScreen = () => {
 
   const obtenerProyectos = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/projects/all');
+      const response = await fetch('https://backend-colabora-plus.onrender.com/api/projects/all');
       const data = await response.json();
       setProyectos(data);
     } catch (error) {
@@ -35,7 +35,7 @@ const HomeScreen = () => {
           style: "destructive",
           onPress: async () => {
             try {
-              const res = await fetch(`http://localhost:3000/api/projects/${idProyecto}`, {
+              const res = await fetch(`https://backend-colabora-plus.onrender.com/api/projects/${idProyecto}`, {
                 method: 'DELETE'
               });
 

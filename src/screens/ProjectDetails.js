@@ -27,7 +27,7 @@ const ProjectDetail = () => {
 
   useEffect(() => {
     if (proyectoSeleccionado?._id) {
-      fetch(`http://localhost:3000/api/tasks/byProject/${proyectoSeleccionado._id}`)
+      fetch(`https://backend-colabora-plus.onrender.com/api/tasks/byProject/${proyectoSeleccionado._id}`)
         .then(res => res.json())
         .then(data => setTareas(data))
         .catch(err => console.error('Error cargando tareas:', err));
@@ -35,7 +35,7 @@ const ProjectDetail = () => {
   }, [proyectoSeleccionado]);
 
   const handleUpdate = () => {
-    fetch(`http://localhost:3000/api/projects/${proyectoSeleccionado._id}`, {
+    fetch(`https://backend-colabora-plus.onrender.com/api/projects/${proyectoSeleccionado._id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

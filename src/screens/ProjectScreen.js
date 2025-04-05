@@ -14,7 +14,7 @@ const ProjectScreen = () => {
   const [integrantesSeleccionados, setIntegrantesSeleccionados] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/users/all')
+    fetch('https://backend-colabora-plus.onrender.com/api/users/all')
       .then(res => res.json())
       .then(data => setUsuarios(data))
       .catch(err => console.error("Error cargando usuarios:", err));
@@ -33,7 +33,7 @@ const ProjectScreen = () => {
     }
   
     try {
-      const response = await fetch('http://localhost:3000/api/projects/add', {
+      const response = await fetch('https://backend-colabora-plus.onrender.com/api/projects/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
