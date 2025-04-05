@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../context/AuthContext';
 import { useProyectos } from '../context/ProyectoContext';
@@ -7,7 +7,7 @@ import BottomNavBar from '../components/BottomNavBar';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const { usuarioActual, rol } = useAuth();
+  const { rol } = useAuth();
   const { proyectos, setProyectos, setProyectoSeleccionado } = useProyectos();
 
   const obtenerProyectos = async () => {
@@ -24,6 +24,43 @@ const HomeScreen = () => {
     obtenerProyectos();
   }, []);
 
+  const handleEliminarProyecto = (idProyecto) => {
+    Alert.alert(
+      "¿Eliminar proyecto?",
+      "¿Estás seguro de que deseas eliminar este proyecto?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Eliminar",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              const res = await fetch(`http://localhost:3000/api/projects/${idProyecto}`, {
+                method: 'DELETE'
+              });
+
+              if (res.ok) {
+                setProyectos(prev => prev.filter(p => p._id !== idProyecto));
+                Alert.alert("✅ Proyecto eliminado correctamente");
+              } else {
+                const data = await res.json();
+                Alert.alert("❌ Error al eliminar", data?.message || "No se pudo eliminar");
+              }
+            } catch (error) {
+              console.error("❌ Error de red:", error);
+              Alert.alert("❌ Error", error.message);
+            }
+          }
+        }
+      ]
+    );
+  };
+
+  const handleVerDetalles = (proyecto) => {
+    setProyectoSeleccionado(proyecto);
+    navigation.navigate('ProjectDetails');
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -33,19 +70,38 @@ const HomeScreen = () => {
 
       <ScrollView contentContainerStyle={styles.scroll}>
         {proyectos.map((proyecto, index) => (
-          <TouchableOpacity
-            key={proyecto._id}
-            style={styles.card}
-            onPress={() => {
-              setProyectoSeleccionado(proyecto); // GUARDAR PROYECTO SELECCIONADO
-              navigation.navigate('ProjectDetails');
-            }}
-          >
-            <Text style={styles.nombre}>{proyecto.nameProject}</Text>
-            <Text style={styles.descripcion}>{proyecto.description}</Text>
-            <Text style={styles.fecha}>Finaliza: {new Date(proyecto.endDate).toLocaleDateString()}</Text>
-            <Text style={styles.integrantes}>Integrantes: {proyecto.teammates.length}</Text>
-          </TouchableOpacity>
+          <View key={proyecto._id} style={styles.cardWrapper}>
+            <TouchableOpacity
+              style={styles.card}
+              onPress={() => handleVerDetalles(proyecto)}
+            >
+              <Text style={styles.nombre}>{proyecto.nameProject}</Text>
+              <Text style={styles.descripcion}>{proyecto.description}</Text>
+              <Text style={styles.fecha}>Finaliza: {new Date(proyecto.endDate).toLocaleDateString()}</Text>
+              <Text style={styles.integrantes}>Integrantes: {proyecto.teammates.length}</Text>
+
+              {rol === 'admin' && (
+                <TouchableOpacity
+                  style={styles.eliminarBtn}
+                  onPress={() => handleEliminarProyecto(proyecto._id)}
+                >
+                  <Text style={styles.eliminarTexto}>🗑 Eliminar Proyecto</Text>
+                </TouchableOpacity>
+              )}
+            </TouchableOpacity>
+
+            {rol === 'admin' && (
+              <TouchableOpacity
+                style={styles.botonTareas}
+                onPress={() => {
+                  setProyectoSeleccionado(proyecto);
+                  navigation.navigate("TaskScreenAdmin");
+                }}
+              >
+                <Text style={styles.tresPuntos}>⋮</Text>
+              </TouchableOpacity>
+            )}
+          </View>
         ))}
       </ScrollView>
 
@@ -72,6 +128,7 @@ const styles = StyleSheet.create({
   logo: { fontSize: 20, fontWeight: 'bold' },
   rol: { fontSize: 14, backgroundColor: '#ddd', padding: 6, borderRadius: 8 },
   scroll: { paddingBottom: 160 },
+  cardWrapper: { position: 'relative' },
   card: {
     backgroundColor: '#fff', padding: 16, borderRadius: 12, marginBottom: 12,
     elevation: 3,
@@ -90,6 +147,31 @@ const styles = StyleSheet.create({
     marginBottom: 80,
   },
   botonTexto: { color: 'white', fontWeight: 'bold' },
+  botonTareas: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: '#eee',
+    padding: 6,
+    borderRadius: 6,
+    zIndex: 10
+  },
+  tresPuntos: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333'
+  },
+  eliminarBtn: {
+    marginTop: 10,
+    backgroundColor: '#dc3545',
+    paddingVertical: 8,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  eliminarTexto: {
+    color: '#fff',
+    fontWeight: 'bold'
+  }
 });
 
 export default HomeScreen;

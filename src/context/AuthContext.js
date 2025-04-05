@@ -8,13 +8,16 @@ export const AuthProvider = ({ children }) => {
   const [rol, setRol] = useState(null);
   const [usuarioActual, setUsuarioActual] = useState(null);
 
+
+  /*CAMBIAR LINEA DE CODIGO*/ 
   const login = (usuarioDesdeBackend) => {
     setUsuarioActual(usuarioDesdeBackend);
-    if (usuarioDesdeBackend.email === 'admin@example.com') {
+    if (usuarioDesdeBackend.rol === 'admin') {
       setRol('admin');
     } else {
       setRol('user');
     }
+    
   };
 
   return (

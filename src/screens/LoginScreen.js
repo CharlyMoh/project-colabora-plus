@@ -33,12 +33,16 @@ const LoginScreen = () => {
   
       if (response.ok) {
         console.log("Login exitoso:", data.user);
-        login(data.user); // usar login del contexto
-        navigation.navigate('Home');
-
-      } else {
-        alert(data.error || "Credenciales incorrectas");
+        login(data.user); // guardar en contexto
+      
+        // Redirigir dependiendo del rol
+        if (data.user.rol === 'admin') {
+          navigation.navigate('Home'); // pantalla para administrador
+        } else {
+          navigation.navigate('UserHome'); // pantalla para usuario normal
+        }
       }
+      
   
     } catch (error) {
       console.error("Error en login:", error);
@@ -71,6 +75,8 @@ const LoginScreen = () => {
           <Text style={styles.buttonText}>Ingresar</Text>
         </TouchableOpacity>
       </View>
+
+      
     </SafeAreaView>
   );
 };

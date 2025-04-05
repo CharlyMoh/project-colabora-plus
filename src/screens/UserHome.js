@@ -1,18 +1,28 @@
-import React from 'react';
+// UserHome.js
+import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useProyectos } from '../context/ProyectoContext';
 import { useAuth } from '../context/AuthContext';
 import BottomNavBar from '../components/BottomNavBar';
+import { useCallback } from 'react';
 
 const UserHome = () => {
   const navigation = useNavigation();
   const { proyectos, setProyectoSeleccionado } = useProyectos();
   const { rol, usuarioActual, setRol, setUsuarioActual } = useAuth();
 
-  const proyectosDelUsuario = proyectos.filter(p =>
-    p.integrantes.includes(usuarioActual)
+  useFocusEffect(
+    useCallback(() => {
+      // Aquí puedes volver a cargar los proyectos si tienes una función
+    }, [proyectos])
   );
+
+  const proyectosDelUsuario = useMemo(() => {
+    return proyectos.filter(p =>
+      p.teammates?.some(u => u._id === usuarioActual._id)
+    );
+  }, [proyectos, usuarioActual]);
 
   const handleVerDetalles = (index) => {
     setProyectoSeleccionado(index);
@@ -58,7 +68,7 @@ const UserHome = () => {
                 >
                   <Text style={styles.projectName}>{proyecto.nombre}</Text>
                   <Text style={styles.projectDetails}>
-                    {proyecto.integrantes.length} integrante(s)
+                    {proyecto.teammates?.length || 0} integrante(s)
                   </Text>
                   <Text style={styles.projectDetails}>
                     {proyecto.fechaInicio} - {proyecto.fechaFin}
@@ -66,7 +76,7 @@ const UserHome = () => {
                   <TouchableOpacity
                     style={styles.buttonDots}
                     onPress={(e) => {
-                      e.stopPropagation(); // evita que se ejecute el onPress del recuadro
+                      e.stopPropagation();
                       handleCambiarEstado(indiceReal);
                     }}
                   >
@@ -75,19 +85,16 @@ const UserHome = () => {
                 </TouchableOpacity>
               );
             })}
+            {proyectosDelUsuario.length === 0 && (
+              <Text style={{ textAlign: 'center', marginTop: 20 }}>No tienes proyectos asignados.</Text>
+            )}
           </View>
         </ScrollView>
       </View>
 
-      <TouchableOpacity
-        style={styles.createProjectButton}
-        onPress={() => navigation.navigate('ProjectScreen')}
-      >
-        <Text style={styles.createProjectText}>CREAR PROYECTO</Text>
-        
-      </TouchableOpacity>
-      <BottomNavBar />
+      {/* Solo mostrar botón si es admin, omitido en UserHome por ahora */}
 
+      <BottomNavBar />
     </View>
   );
 };
@@ -144,16 +151,7 @@ const styles = StyleSheet.create({
   buttonDots: {
     borderWidth: 1, borderColor: '#fff', paddingVertical: 4,
     paddingHorizontal: 10, borderRadius: 6, alignSelf: 'flex-end'
-  },
-  createProjectButton: {
-    backgroundColor: '#28a745', padding: 18, borderRadius: 12,
-    marginTop: 20, marginBottom: 15, alignItems: 'center',
-    shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5,
-  },
-  createProjectText: {
-    fontSize: 18, fontWeight: 'bold', color: '#fff', textAlign: 'center'
-  },
+  }
 });
 
 export default UserHome;

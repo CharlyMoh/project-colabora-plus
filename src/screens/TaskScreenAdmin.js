@@ -12,31 +12,50 @@ import { useProyectos } from '../context/ProyectoContext';
 
 const TaskScreenAdmin = () => {
   const navigation = useNavigation();
-  const { agregarTareaAProyecto, proyectoSeleccionado, proyectos } = useProyectos();
+  const { proyectoSeleccionado } = useProyectos();
 
   const [nombreTarea, setNombreTarea] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [fechaInicio, setFechaInicio] = useState('');
   const [fechaFin, setFechaFin] = useState('');
 
-  const handleFinalizar = () => {
-    if (proyectoSeleccionado === null || proyectoSeleccionado === undefined) {
+  const handleFinalizar = async () => {
+    if (!proyectoSeleccionado) {
       alert('No hay proyecto seleccionado');
       return;
     }
 
-    const integrantes = proyectos[proyectoSeleccionado].integrantes || [];
+    if (!nombreTarea || !descripcion || !fechaFin) {
+      alert('Completa todos los campos requeridos');
+      return;
+    }
 
-    const nuevaTarea = {
-      nombre: nombreTarea,
-      descripcion,
-      fechaInicio,
-      fechaFin,
-      progreso: integrantes.map(usuario => ({ usuario, estado: 'Pendiente' }))
-    };
+    try {
+      const response = await fetch('http://localhost:3000/api/tasks/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          tittle: nombreTarea,
+          assignedProject: proyectoSeleccionado._id,
+          users: proyectoSeleccionado.teammates.map(t => t._id), // 🔥 ahora todos los usuarios
+          dueDate: fechaFin
+        })
+      });
 
-    agregarTareaAProyecto(proyectoSeleccionado, nuevaTarea);
-    navigation.navigate('Home');
+      const data = await response.json();
+
+      if (response.ok) {
+        alert('Tarea registrada correctamente');
+        navigation.navigate('Home');
+      } else {
+        alert(data.error || 'Error al registrar la tarea');
+      }
+    } catch (error) {
+      console.error('Error al registrar tarea:', error);
+      alert('Error de conexión con el servidor');
+    }
   };
 
   return (
@@ -73,7 +92,7 @@ const TaskScreenAdmin = () => {
         <Text style={styles.label}>Inicio</Text>
         <TextInput
           style={styles.input}
-          placeholder="DD/MM/AAAA"
+          placeholder="YYYY-MM-DD"
           value={fechaInicio}
           onChangeText={setFechaInicio}
         />
@@ -83,7 +102,7 @@ const TaskScreenAdmin = () => {
         <Text style={styles.label}>Finalización</Text>
         <TextInput
           style={styles.input}
-          placeholder="DD/MM/AAAA"
+          placeholder="YYYY-MM-DD"
           value={fechaFin}
           onChangeText={setFechaFin}
         />

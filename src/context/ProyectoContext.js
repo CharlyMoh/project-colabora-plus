@@ -13,16 +13,20 @@ export const ProyectoProvider = ({ children }) => {
     setProyectos(prev => [...prev, proyectoConTareas]);
   };
 
-  const agregarTareaAProyecto = (index, tarea) => {
+  const agregarTareaAProyecto = (proyecto, tarea) => {
     setProyectos(prev => {
       const copia = [...prev];
+      const index = copia.findIndex(p => p._id === proyecto._id);
+      if (index === -1) return prev;
+
       const tareaConProgreso = {
         ...tarea,
-        progreso: copia[index].integrantes.map(usuario => ({
+        progreso: (copia[index].teammates || []).map(usuario => ({
           usuario,
           estado: 'Pendiente'
         }))
       };
+
       copia[index].tareas = [...(copia[index].tareas || []), tareaConProgreso];
       return copia;
     });
